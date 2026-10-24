@@ -42,6 +42,12 @@ const config = {
     datasetCron: process.env.DATASET_CRON ?? "30 5 * * *",
   },
 
+  customer: {
+    // Register-specific constants stamped on every exported customer record.
+    subsidiary: process.env.CUSTOMER_SUBSIDIARY ?? "FI",
+    currency: process.env.CUSTOMER_CURRENCY ?? "EUR",
+  },
+
   uploads: {
     // Tests get their own directory so seeders and fixtures never touch development uploads.
     dir: process.env.UPLOAD_DIR ?? (process.env.NODE_ENV === "test" ? path.join(tmpdir(), "advectus-test-uploads") : "./uploads"),

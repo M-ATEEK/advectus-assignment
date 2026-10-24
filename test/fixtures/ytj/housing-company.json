@@ -1,0 +1,201 @@
+{
+  "businessId": {
+    "value": "0184194-4",
+    "registrationDate": "1978-03-15",
+    "source": "3"
+  },
+  "euId": null,
+  "names": [
+    {
+      "name": "Asunto Oy Vaasan Suvikartano",
+      "type": "1",
+      "registrationDate": "1971-12-31",
+      "endDate": null,
+      "version": 1,
+      "source": "1"
+    }
+  ],
+  "mainBusinessLine": {
+    "type": "68202",
+    "descriptions": [
+      {
+        "languageCode": "1",
+        "description": "Asuntojen ja asuinkiinteistöjen hallinta"
+      },
+      {
+        "languageCode": "2",
+        "description": "Förvaltning av bostäder och bostadsfastigheter"
+      },
+      {
+        "languageCode": "3",
+        "description": "Operating of own or leased dwellings and residential real estate"
+      }
+    ],
+    "typeCodeSet": "TOIMI4",
+    "registrationDate": "2026-01-01",
+    "source": "2"
+  },
+  "website": {
+    "url": "www.rettaisannointi.fi",
+    "registrationDate": "2026-02-10",
+    "source": "0"
+  },
+  "companyForms": [
+    {
+      "type": "2",
+      "descriptions": [
+        {
+          "languageCode": "1",
+          "description": "Asunto-osakeyhtiö"
+        },
+        {
+          "languageCode": "2",
+          "description": "Bostadsaktiebolag"
+        },
+        {
+          "languageCode": "3",
+          "description": "Housing corporation"
+        }
+      ],
+      "registrationDate": null,
+      "endDate": null,
+      "version": 1,
+      "source": "1"
+    }
+  ],
+  "companySituations": [],
+  "registeredEntries": [
+    {
+      "type": "1",
+      "descriptions": [
+        {
+          "languageCode": "3",
+          "description": "Registered"
+        },
+        {
+          "languageCode": "2",
+          "description": "Registrerad"
+        },
+        {
+          "languageCode": "1",
+          "description": "Rekisterissä"
+        }
+      ],
+      "registrationDate": "1971-12-31",
+      "endDate": null,
+      "register": "1",
+      "authority": "2"
+    },
+    {
+      "type": "1",
+      "descriptions": [
+        {
+          "languageCode": "3",
+          "description": "Registered"
+        },
+        {
+          "languageCode": "2",
+          "description": "Registrerad"
+        },
+        {
+          "languageCode": "1",
+          "description": "Rekisterissä"
+        }
+      ],
+      "registrationDate": "1978-03-15",
+      "endDate": null,
+      "register": "4",
+      "authority": "1"
+    },
+    {
+      "type": "41",
+      "descriptions": [
+        {
+          "languageCode": "3",
+          "description": "Registered"
+        },
+        {
+          "languageCode": "2",
+          "description": "Registrerad"
+        },
+        {
+          "languageCode": "1",
+          "description": "Rekisterissä"
+        }
+      ],
+      "registrationDate": "1978-04-01",
+      "endDate": "2013-09-04",
+      "register": "7",
+      "authority": "1"
+    }
+  ],
+  "addresses": [
+    {
+      "type": 1,
+      "street": "Rantakatu",
+      "postCode": "65100",
+      "postOffices": [
+        {
+          "postCode": "65100",
+          "city": "VAASA",
+          "active": true,
+          "languageCode": "1",
+          "municipalityCode": "905"
+        },
+        {
+          "postCode": "65100",
+          "city": "VASA",
+          "active": true,
+          "languageCode": "2",
+          "municipalityCode": "905"
+        }
+      ],
+      "postOfficeBox": null,
+      "buildingNumber": "13",
+      "entrance": "V",
+      "apartmentNumber": "",
+      "apartmentIdSuffix": "",
+      "co": "c/o Retta Isännöinti, Vaasa",
+      "country": null,
+      "freeAddressLine": null,
+      "registrationDate": "2026-02-10",
+      "source": "0"
+    },
+    {
+      "type": 2,
+      "street": "Rantakatu",
+      "postCode": "65100",
+      "postOffices": [
+        {
+          "postCode": "65100",
+          "city": "VAASA",
+          "active": true,
+          "languageCode": "1",
+          "municipalityCode": "905"
+        },
+        {
+          "postCode": "65100",
+          "city": "VASA",
+          "active": true,
+          "languageCode": "2",
+          "municipalityCode": "905"
+        }
+      ],
+      "postOfficeBox": "",
+      "buildingNumber": "13",
+      "entrance": "V",
+      "apartmentNumber": "",
+      "apartmentIdSuffix": "",
+      "co": "c/o Retta Isännöinti Oy, Vaasa",
+      "country": null,
+      "freeAddressLine": null,
+      "registrationDate": "2026-02-10",
+      "source": "0"
+    }
+  ],
+  "tradeRegisterStatus": "1",
+  "status": "2",
+  "registrationDate": "1971-12-31",
+  "endDate": null,
+  "lastModified": "2026-04-21 13:19:30"
+}

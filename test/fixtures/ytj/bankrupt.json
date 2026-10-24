@@ -1,0 +1,282 @@
+{
+  "businessId": {
+    "value": "0184443-2",
+    "registrationDate": "1978-03-15",
+    "source": "3"
+  },
+  "euId": {
+    "value": "FIFPRO.0184443-2",
+    "source": "1"
+  },
+  "names": [
+    {
+      "name": "Kätevä-Tuote Oy",
+      "type": "1",
+      "registrationDate": "2001-08-10",
+      "endDate": null,
+      "version": 1,
+      "source": "1"
+    },
+    {
+      "name": "Turkistarha Lehtinen Oy",
+      "type": "1",
+      "registrationDate": "1995-10-11",
+      "endDate": "2001-08-09",
+      "version": 2,
+      "source": "1"
+    }
+  ],
+  "mainBusinessLine": {
+    "type": "33122",
+    "descriptions": [
+      {
+        "languageCode": "1",
+        "description": "Maa- ja metsätalouskoneiden korjaus ja huolto"
+      },
+      {
+        "languageCode": "3",
+        "description": "Repair and maintenance of agricultural and forestry machinery"
+      },
+      {
+        "languageCode": "2",
+        "description": "Reparation och underhåll av jord- och skogsbruksmaskiner"
+      }
+    ],
+    "typeCodeSet": "TOIMI4",
+    "registrationDate": "2026-01-01",
+    "source": "2"
+  },
+  "website": {
+    "url": "www.katevatuote.fi",
+    "registrationDate": "2017-07-28",
+    "source": "0"
+  },
+  "companyForms": [
+    {
+      "type": "16",
+      "descriptions": [
+        {
+          "languageCode": "2",
+          "description": "Aktiebolag"
+        },
+        {
+          "languageCode": "3",
+          "description": "Limited company"
+        },
+        {
+          "languageCode": "1",
+          "description": "Osakeyhtiö"
+        }
+      ],
+      "registrationDate": "1995-10-11",
+      "endDate": null,
+      "version": 1,
+      "source": "1"
+    }
+  ],
+  "companySituations": [
+    {
+      "type": "KONK",
+      "registrationDate": "2026-03-02",
+      "endDate": null,
+      "source": "1"
+    }
+  ],
+  "registeredEntries": [
+    {
+      "type": "1",
+      "descriptions": [
+        {
+          "languageCode": "3",
+          "description": "Registered"
+        },
+        {
+          "languageCode": "2",
+          "description": "Registrerad"
+        },
+        {
+          "languageCode": "1",
+          "description": "Rekisterissä"
+        }
+      ],
+      "registrationDate": "1983-09-29",
+      "endDate": null,
+      "register": "1",
+      "authority": "2"
+    },
+    {
+      "type": "1",
+      "descriptions": [
+        {
+          "languageCode": "3",
+          "description": "Registered"
+        },
+        {
+          "languageCode": "2",
+          "description": "Registrerad"
+        },
+        {
+          "languageCode": "1",
+          "description": "Rekisterissä"
+        }
+      ],
+      "registrationDate": "1978-03-15",
+      "endDate": null,
+      "register": "4",
+      "authority": "1"
+    },
+    {
+      "type": "55",
+      "descriptions": [
+        {
+          "languageCode": "3",
+          "description": "Registered"
+        },
+        {
+          "languageCode": "2",
+          "description": "Registrerad"
+        },
+        {
+          "languageCode": "1",
+          "description": "Rekisterissä"
+        }
+      ],
+      "registrationDate": "1995-03-01",
+      "endDate": "2026-02-28",
+      "register": "5",
+      "authority": "1"
+    },
+    {
+      "type": "80",
+      "descriptions": [
+        {
+          "languageCode": "1",
+          "description": "Liiketoiminnasta arvonlisäverovelvollinen"
+        },
+        {
+          "languageCode": "2",
+          "description": "Momsskyldig för rörelseverksamhet"
+        },
+        {
+          "languageCode": "3",
+          "description": "VAT-liable for business activity"
+        }
+      ],
+      "registrationDate": "1995-01-01",
+      "endDate": "2026-03-02",
+      "register": "6",
+      "authority": "1"
+    },
+    {
+      "type": "83",
+      "descriptions": [
+        {
+          "languageCode": "1",
+          "description": "Alkutuottajana ja/tai kuvataiteilijana arvonlisäverovelvollinen"
+        },
+        {
+          "languageCode": "2",
+          "description": "Momsskyldig som primärproducent och/eller bildkonstnär"
+        },
+        {
+          "languageCode": "3",
+          "description": "VAT-liable for agriculture and forestry"
+        }
+      ],
+      "registrationDate": "1995-01-01",
+      "endDate": "2026-03-02",
+      "register": "6",
+      "authority": "1"
+    },
+    {
+      "type": "41",
+      "descriptions": [
+        {
+          "languageCode": "3",
+          "description": "Registered"
+        },
+        {
+          "languageCode": "2",
+          "description": "Registrerad"
+        },
+        {
+          "languageCode": "1",
+          "description": "Rekisterissä"
+        }
+      ],
+      "registrationDate": "2001-09-01",
+      "endDate": "2025-09-30",
+      "register": "7",
+      "authority": "1"
+    }
+  ],
+  "addresses": [
+    {
+      "type": 1,
+      "street": "Peltohaantie",
+      "postCode": "62375",
+      "postOffices": [
+        {
+          "postCode": "62375",
+          "city": "YLIHÄRMÄ",
+          "active": true,
+          "languageCode": "1",
+          "municipalityCode": "233"
+        },
+        {
+          "postCode": "62375",
+          "city": "YLIHÄRMÄ",
+          "active": true,
+          "languageCode": "2",
+          "municipalityCode": "233"
+        }
+      ],
+      "postOfficeBox": null,
+      "buildingNumber": "1",
+      "entrance": "",
+      "apartmentNumber": "",
+      "apartmentIdSuffix": "",
+      "co": "",
+      "country": null,
+      "freeAddressLine": null,
+      "registrationDate": "2017-07-28",
+      "source": "0"
+    },
+    {
+      "type": 2,
+      "street": "Peltohaantie",
+      "postCode": "62375",
+      "postOffices": [
+        {
+          "postCode": "62375",
+          "city": "YLIHÄRMÄ",
+          "active": true,
+          "languageCode": "1",
+          "municipalityCode": "233"
+        },
+        {
+          "postCode": "62375",
+          "city": "YLIHÄRMÄ",
+          "active": true,
+          "languageCode": "2",
+          "municipalityCode": "233"
+        }
+      ],
+      "postOfficeBox": "",
+      "buildingNumber": "1",
+      "entrance": "",
+      "apartmentNumber": "",
+      "apartmentIdSuffix": "",
+      "co": "",
+      "country": null,
+      "freeAddressLine": null,
+      "registrationDate": "2017-07-28",
+      "source": "0"
+    }
+  ],
+  "tradeRegisterStatus": "1",
+  "status": "2",
+  "registrationDate": "1983-09-29",
+  "endDate": null,
+  "lastModified": "2026-10-05 07:02:29"
+}

@@ -1,0 +1,163 @@
+{
+  "businessId": {
+    "value": "0192399-0",
+    "registrationDate": "1978-03-15",
+    "source": "3"
+  },
+  "euId": null,
+  "names": [
+    {
+      "name": "Maarakentajien Lapin Piiriyhdistys ry",
+      "type": "1",
+      "registrationDate": "2000-08-07",
+      "endDate": null,
+      "version": 1,
+      "source": "2"
+    },
+    {
+      "name": "MAANRAKENTAJAIN LAPIN PIIRIYHD. R Y",
+      "type": "1",
+      "registrationDate": null,
+      "endDate": "2000-08-06",
+      "version": 2,
+      "source": "2"
+    }
+  ],
+  "mainBusinessLine": {
+    "type": "94999",
+    "descriptions": [
+      {
+        "languageCode": "3",
+        "description": "Activities of other membership organisations n.e.c."
+      },
+      {
+        "languageCode": "1",
+        "description": "Muualla luokittelemattomat muut järjestöt"
+      },
+      {
+        "languageCode": "2",
+        "description": "Övriga organisationer"
+      }
+    ],
+    "typeCodeSet": "TOIMI3",
+    "registrationDate": "2007-12-31",
+    "source": "2"
+  },
+  "website": null,
+  "companyForms": [
+    {
+      "type": "6",
+      "descriptions": [
+        {
+          "languageCode": "1",
+          "description": "Aatteellinen yhdistys"
+        },
+        {
+          "languageCode": "2",
+          "description": "Ideell förening"
+        },
+        {
+          "languageCode": "3",
+          "description": "Non-profit association"
+        }
+      ],
+      "registrationDate": "1988-01-01",
+      "endDate": "2009-02-24",
+      "version": 1,
+      "source": "2"
+    }
+  ],
+  "companySituations": [],
+  "registeredEntries": [
+    {
+      "type": "0",
+      "descriptions": [
+        {
+          "languageCode": "2",
+          "description": "Oregistrerad"
+        },
+        {
+          "languageCode": "1",
+          "description": "Rekisteröimätön"
+        },
+        {
+          "languageCode": "3",
+          "description": "Unregistered"
+        }
+      ],
+      "registrationDate": "2008-09-24",
+      "endDate": null,
+      "register": "1",
+      "authority": "2"
+    },
+    {
+      "type": "1",
+      "descriptions": [
+        {
+          "languageCode": "3",
+          "description": "Registered"
+        },
+        {
+          "languageCode": "2",
+          "description": "Registrerad"
+        },
+        {
+          "languageCode": "1",
+          "description": "Rekisterissä"
+        }
+      ],
+      "registrationDate": "1978-03-15",
+      "endDate": "2009-02-24",
+      "register": "4",
+      "authority": "1"
+    },
+    {
+      "type": "55",
+      "descriptions": [
+        {
+          "languageCode": "3",
+          "description": "Registered"
+        },
+        {
+          "languageCode": "2",
+          "description": "Registrerad"
+        },
+        {
+          "languageCode": "1",
+          "description": "Rekisterissä"
+        }
+      ],
+      "registrationDate": "1997-10-22",
+      "endDate": "2008-09-24",
+      "register": "5",
+      "authority": "1"
+    },
+    {
+      "type": "80",
+      "descriptions": [
+        {
+          "languageCode": "1",
+          "description": "Liiketoiminnasta arvonlisäverovelvollinen"
+        },
+        {
+          "languageCode": "2",
+          "description": "Momsskyldig för rörelseverksamhet"
+        },
+        {
+          "languageCode": "3",
+          "description": "VAT-liable for business activity"
+        }
+      ],
+      "registrationDate": "2006-01-01",
+      "endDate": "2007-12-31",
+      "register": "6",
+      "authority": "1"
+    }
+  ],
+  "addresses": [],
+  "tradeRegisterStatus": "0",
+  "status": "2",
+  "registrationDate": null,
+  "endDate": "2009-02-25",
+  "lastModified": "2018-02-28 09:15:14"
+}

@@ -1,0 +1,187 @@
+{
+  "businessId": {
+    "value": "0184215-4",
+    "registrationDate": "1978-03-15",
+    "source": "3"
+  },
+  "euId": null,
+  "names": [
+    {
+      "name": "Asunto Oy Vanhan-Vaasan Läntinen Pitkäkatu 2",
+      "type": "1",
+      "registrationDate": "1974-11-01",
+      "endDate": null,
+      "version": 1,
+      "source": "1"
+    }
+  ],
+  "mainBusinessLine": {
+    "type": "68202",
+    "descriptions": [
+      {
+        "languageCode": "1",
+        "description": "Asuntojen ja asuinkiinteistöjen hallinta"
+      },
+      {
+        "languageCode": "2",
+        "description": "Förvaltning av bostäder och bostadsfastigheter"
+      },
+      {
+        "languageCode": "3",
+        "description": "Operating of own or leased dwellings and residential real estate"
+      }
+    ],
+    "typeCodeSet": "TOIMI4",
+    "registrationDate": "2026-01-01",
+    "source": "2"
+  },
+  "website": {
+    "url": "www.oylakivainio.fi",
+    "registrationDate": "2024-01-03",
+    "source": "0"
+  },
+  "companyForms": [
+    {
+      "type": "2",
+      "descriptions": [
+        {
+          "languageCode": "1",
+          "description": "Asunto-osakeyhtiö"
+        },
+        {
+          "languageCode": "2",
+          "description": "Bostadsaktiebolag"
+        },
+        {
+          "languageCode": "3",
+          "description": "Housing corporation"
+        }
+      ],
+      "registrationDate": null,
+      "endDate": null,
+      "version": 1,
+      "source": "1"
+    }
+  ],
+  "companySituations": [
+    {
+      "type": "SELTILA",
+      "registrationDate": "2020-08-18",
+      "endDate": null,
+      "source": "1"
+    }
+  ],
+  "registeredEntries": [
+    {
+      "type": "1",
+      "descriptions": [
+        {
+          "languageCode": "3",
+          "description": "Registered"
+        },
+        {
+          "languageCode": "2",
+          "description": "Registrerad"
+        },
+        {
+          "languageCode": "1",
+          "description": "Rekisterissä"
+        }
+      ],
+      "registrationDate": "1974-11-01",
+      "endDate": null,
+      "register": "1",
+      "authority": "2"
+    },
+    {
+      "type": "1",
+      "descriptions": [
+        {
+          "languageCode": "3",
+          "description": "Registered"
+        },
+        {
+          "languageCode": "2",
+          "description": "Registrerad"
+        },
+        {
+          "languageCode": "1",
+          "description": "Rekisterissä"
+        }
+      ],
+      "registrationDate": "1978-03-15",
+      "endDate": null,
+      "register": "4",
+      "authority": "1"
+    }
+  ],
+  "addresses": [
+    {
+      "type": 1,
+      "street": "Rauhankatu",
+      "postCode": "65100",
+      "postOffices": [
+        {
+          "postCode": "65100",
+          "city": "VAASA",
+          "active": true,
+          "languageCode": "1",
+          "municipalityCode": "905"
+        },
+        {
+          "postCode": "65100",
+          "city": "VASA",
+          "active": true,
+          "languageCode": "2",
+          "municipalityCode": "905"
+        }
+      ],
+      "postOfficeBox": null,
+      "buildingNumber": "16",
+      "entrance": "B",
+      "apartmentNumber": "",
+      "apartmentIdSuffix": "",
+      "co": "c/o Oy Lakiasiat Jukka Vainio Ab",
+      "country": null,
+      "freeAddressLine": null,
+      "registrationDate": "2024-01-03",
+      "source": "0"
+    },
+    {
+      "type": 2,
+      "street": "Rauhankatu",
+      "postCode": "65100",
+      "postOffices": [
+        {
+          "postCode": "65100",
+          "city": "VAASA",
+          "active": true,
+          "languageCode": "1",
+          "municipalityCode": "905"
+        },
+        {
+          "postCode": "65100",
+          "city": "VASA",
+          "active": true,
+          "languageCode": "2",
+          "municipalityCode": "905"
+        }
+      ],
+      "postOfficeBox": "",
+      "buildingNumber": "16",
+      "entrance": "B",
+      "apartmentNumber": "",
+      "apartmentIdSuffix": "",
+      "co": "c/o Oy Lakiasiat Jukka Vainio Ab",
+      "country": null,
+      "freeAddressLine": null,
+      "registrationDate": "2024-01-03",
+      "source": "0"
+    }
+  ],
+  "tradeRegisterStatus": "1",
+  "status": "2",
+  "registrationDate": "1974-11-01",
+  "endDate": null,
+  "lastModified": "2025-12-31 07:39:20"
+}
