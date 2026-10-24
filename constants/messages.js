@@ -84,6 +84,23 @@ export const ERRORS = Object.freeze({
     status: HTTP_STATUS.NOT_FOUND,
     message: "No upload exists with id {id}.",
   },
+  UPLOAD_FILE_MISSING: {
+    code: "UPLOAD_FILE_MISSING",
+    status: HTTP_STATUS.GONE,
+    message: "The file for upload {id} is no longer available on the server. Upload it again.",
+  },
+  UPLOAD_NOT_USABLE: {
+    code: "UPLOAD_NOT_USABLE",
+    status: HTTP_STATUS.UNPROCESSABLE_ENTITY,
+    message: "The uploaded CSV cannot be enriched: {reasons}",
+  },
+
+  // --- enrichments ---
+  ENRICHMENT_NOT_FOUND: {
+    code: "ENRICHMENT_NOT_FOUND",
+    status: HTTP_STATUS.NOT_FOUND,
+    message: "No enrichment job exists with id {id}.",
+  },
 });
 
 /** Non-fatal findings reported by CSV inspection. Codes are stable; text is for humans. */
@@ -105,4 +122,7 @@ export const MESSAGES = Object.freeze({
   HEALTH_OK: "Service is healthy.",
   UPLOAD_RECEIVED: "CSV received and stored.",
   UPLOAD_INSPECTED: "CSV inspected.",
+  ENRICHMENT_QUEUED: "Enrichment job created and queued.",
+  ENRICHMENT_FETCHED: "Enrichment job fetched.",
+  ENRICHMENT_ROWS_FETCHED: "Enrichment rows fetched.",
 });

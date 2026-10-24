@@ -11,9 +11,15 @@
   "scripts": {
     "start": "node bin/www.js",
     "dev": "node --watch --env-file-if-exists=.env bin/www.js",
+    "worker": "node bin/worker.js",
+    "db:migrate": "node bin/db.js migrate",
+    "db:rollback": "node bin/db.js migrate:undo",
+    "db:status": "node bin/db.js migrate:status",
+    "db:seed": "node bin/db.js seed",
+    "db:reset": "node bin/db.js reset",
     "lint": "eslint .",
-    "test": "NODE_ENV=test LOG_LEVEL=silent node --test \"test/**/*.test.js\"",
-    "test:watch": "NODE_ENV=test LOG_LEVEL=silent node --test --watch \"test/**/*.test.js\""
+    "test": "NODE_ENV=test LOG_LEVEL=silent node --test --test-concurrency=1 \"test/**/*.test.js\"",
+    "test:watch": "NODE_ENV=test LOG_LEVEL=silent node --test --watch --test-concurrency=1 \"test/**/*.test.js\""
   },
   "dependencies": {
     "bullmq": "^6.4.1",
@@ -29,6 +35,8 @@
     "pg-copy-streams": "^7.0.0",
     "pino": "^10.4.0",
     "pino-http": "^11.0.0",
+    "sequelize": "^6.37.8",
+    "umzug": "^3.8.3",
     "yauzl": "^3.4.0"
   },
   "devDependencies": {

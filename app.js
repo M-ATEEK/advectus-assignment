@@ -9,12 +9,19 @@ import { errorHandler } from "./middleware/errorHandler.js";
 import config from "./config/index.js";
 import { createUploadService } from "./services/uploads.js";
 import { createInspectService } from "./services/inspect.js";
+import { createEnrichmentService } from "./services/enrichments.js";
+import { createQueue } from "./jobs/queue.js";
 
 export const createApp = (overrides = {}) => {
   const app = express();
+  const uploads = overrides.uploads ?? createUploadService(config.uploads);
+  const inspector = overrides.inspector ?? createInspectService();
+  const queue = overrides.queue ?? createQueue();
   const deps = {
-    uploads: overrides.uploads ?? createUploadService(config.uploads),
-    inspector: overrides.inspector ?? createInspectService(),
+    uploads,
+    inspector,
+    queue,
+    enrichments: overrides.enrichments ?? createEnrichmentService({ uploads, inspector, queue }),
   };
 
   app.disable("x-powered-by");

@@ -39,10 +39,10 @@ export const createUploadController = ({ uploads, inspector }) => ({
 
   /** GET /uploads/:id/inspect — what the pipeline would understand from the stored CSV. */
   inspect: async (req, res) => {
-    const upload = await uploads.find(req.params.id);
-    if (!upload) throw ApiError.from(ERRORS.UPLOAD_NOT_FOUND, { params: { id: req.params.id } });
+    const { id, maxRows, sampleSize } = req.validated;
+    const upload = await uploads.find(id);
+    if (!upload) throw ApiError.from(ERRORS.UPLOAD_NOT_FOUND, { params: { id } });
 
-    const { maxRows, sampleSize } = req.query;
     const inspection = await inspector.inspect(upload.path, { maxRows, sampleSize });
 
     return sendSuccess(res, {

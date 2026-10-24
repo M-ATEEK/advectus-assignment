@@ -1,11 +1,12 @@
 import { createHash, randomUUID } from "node:crypto";
 import { createWriteStream } from "node:fs";
-import { mkdir, readFile, stat, unlink, writeFile } from "node:fs/promises";
+import { access, mkdir, unlink } from "node:fs/promises";
 import path from "node:path";
 import { Transform } from "node:stream";
 import { pipeline } from "node:stream/promises";
 import { ApiError } from "../utils/ApiError.js";
 import { ERRORS } from "../constants/messages.js";
+import { Upload } from "../models/index.js";
 
 const ABORT_CODES = new Set(["ERR_STREAM_PREMATURE_CLOSE", "ECONNRESET"]);
 
@@ -17,7 +18,6 @@ const ABORT_CODES = new Set(["ERR_STREAM_PREMATURE_CLOSE", "ECONNRESET"]);
 export const createUploadService = ({ dir, maxBytes, sniffBytes = 8192 }) => {
   const ensureDir = mkdir(dir, { recursive: true });
   const limitMb = Math.round(maxBytes / 1024 / 1024);
-  const metaPath = (id) => path.join(dir, `${id}.meta.json`);
 
   const inspector = (state) =>
     new Transform({
@@ -40,7 +40,7 @@ export const createUploadService = ({ dir, maxBytes, sniffBytes = 8192 }) => {
   const save = async (source, { originalName = null, contentType = null } = {}) => {
     await ensureDir;
     const id = randomUUID();
-    const filePath = path.join(dir, `${id}.csv`);
+    const filePath = path.resolve(dir, `${id}.csv`);
     const state = { bytes: 0, sniffed: false, hash: createHash("sha256") };
 
     try {
@@ -53,30 +53,36 @@ export const createUploadService = ({ dir, maxBytes, sniffBytes = 8192 }) => {
       throw err;
     }
 
-    const upload = {
-      id,
-      fileName: originalName,
-      contentType,
-      bytes: state.bytes,
-      sha256: state.hash.digest("hex"),
-      path: filePath,
-      receivedAt: new Date().toISOString(),
-    };
-    // Sidecar metadata keeps the upload self-describing until a database owns this record.
-    await writeFile(metaPath(id), JSON.stringify({ ...upload, path: undefined }), "utf8");
-    return upload;
-  };
-
-  /** @returns {Promise<object|null>} the stored upload with its `path`, or null when unknown. */
-  const find = async (id) => {
-    const filePath = path.join(dir, `${id}.csv`);
     try {
-      const [meta, fileStat] = await Promise.all([readFile(metaPath(id), "utf8").then(JSON.parse), stat(filePath)]);
-      return { ...meta, bytes: fileStat.size, path: filePath };
+      const upload = await Upload.create({
+        id,
+        fileName: originalName,
+        contentType,
+        bytes: state.bytes,
+        sha256: state.hash.digest("hex"),
+        path: filePath,
+        receivedAt: new Date(),
+      });
+      return upload.get({ plain: true });
     } catch (err) {
-      if (err.code === "ENOENT") return null;
+      await unlink(filePath).catch(() => {});
       throw err;
     }
+  };
+
+  /**
+   * @returns {Promise<object|null>} the stored upload (including its server `path`), or null when unknown.
+   * Throws UPLOAD_FILE_MISSING when the record exists but its file is gone from disk.
+   */
+  const find = async (id) => {
+    const upload = await Upload.findByPk(id);
+    if (!upload) return null;
+    try {
+      await access(upload.path);
+    } catch {
+      throw ApiError.from(ERRORS.UPLOAD_FILE_MISSING, { params: { id } });
+    }
+    return upload.get({ plain: true });
   };
 
   return { save, find, limitMb };

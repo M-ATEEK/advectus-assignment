@@ -3,8 +3,8 @@ import assert from "node:assert/strict";
 import { mkdtemp, readFile, readdir, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
-import { createApp } from "../app.js";
 import { createUploadService } from "../services/uploads.js";
+import { closeDatabase, resetDatabase, startTestApp, stopTestApp } from "./helpers/app.js";
 
 const CSV = "business_id;company_name\n0112038-9;Nokia Oyj\n;Tikkurila Oyj\n";
 let server, baseUrl, dir;
@@ -25,15 +25,15 @@ const expectError = async (res, status, code) => {
 };
 
 before(async () => {
+  await resetDatabase();
   dir = await mkdtemp(path.join(tmpdir(), "advectus-uploads-"));
   const uploads = createUploadService({ dir, maxBytes: 1024, sniffBytes: 64 });
-  server = createApp({ uploads }).listen(0);
-  await new Promise((r) => server.once("listening", r));
-  baseUrl = `http://127.0.0.1:${server.address().port}/api/v1`;
+  ({ server, baseUrl } = await startTestApp({ uploads }));
 });
 
 after(async () => {
-  await new Promise((r) => server.close(r));
+  await stopTestApp(server);
+  await closeDatabase();
   await rm(dir, { recursive: true, force: true });
 });
 

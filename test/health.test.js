@@ -1,17 +1,19 @@
 import { test, before, after } from "node:test";
 import assert from "node:assert/strict";
-import { createApp } from "../app.js";
+import { closeDatabase, startTestApp, stopTestApp } from "./helpers/app.js";
 
 let server;
 let baseUrl;
 
 before(async () => {
-  server = createApp().listen(0);
-  await new Promise((resolve) => server.once("listening", resolve));
-  baseUrl = `http://127.0.0.1:${server.address().port}`;
+  ({ server, baseUrl } = await startTestApp());
+  baseUrl = baseUrl.replace(/\/api\/v1$/, "");
 });
 
-after(() => new Promise((resolve) => server.close(resolve)));
+after(async () => {
+  await stopTestApp(server);
+  await closeDatabase();
+});
 
 test("GET /api/v1/health returns ok", async () => {
   const res = await fetch(`${baseUrl}/api/v1/health`);

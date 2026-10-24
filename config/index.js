@@ -1,4 +1,6 @@
 import "dotenv/config";
+import { tmpdir } from "node:os";
+import path from "node:path";
 
 const int = (value, fallback) => {
   const n = Number.parseInt(value ?? "", 10);
@@ -15,8 +17,15 @@ const config = {
   logLevel: process.env.LOG_LEVEL ?? "info",
   allowOrigins: list(process.env.ALLOW_ORIGINS, ["http://localhost:3000", "http://localhost:5173"]),
 
-  databaseUrl: process.env.DATABASE_URL ?? "postgres://advectus:advectus@localhost:5440/advectus",
+  databaseUrl:
+    process.env.NODE_ENV === "test"
+      ? process.env.DATABASE_URL_TEST ?? "postgres://advectus:advectus@localhost:5440/advectus_test"
+      : process.env.DATABASE_URL ?? "postgres://advectus:advectus@localhost:5440/advectus",
   redisUrl: process.env.REDIS_URL ?? "redis://localhost:6390",
+
+  queue: {
+    concurrency: int(process.env.QUEUE_CONCURRENCY, 2),
+  },
 
   ytj: {
     baseUrl: process.env.YTJ_BASE_URL ?? "https://avoindata.prh.fi/opendata-ytj-api/v3",
@@ -27,12 +36,15 @@ const config = {
   pipeline: {
     syncRowLimit: int(process.env.SYNC_ROW_LIMIT, 200),
     chunkSize: int(process.env.CHUNK_SIZE, 1000),
+    rowBatchSize: int(process.env.ROW_BATCH_SIZE, 1000),
+    usabilityScanRows: int(process.env.USABILITY_SCAN_ROWS, 200),
     datasetMaxAgeHours: int(process.env.DATASET_MAX_AGE_H, 24),
     datasetCron: process.env.DATASET_CRON ?? "30 5 * * *",
   },
 
   uploads: {
-    dir: process.env.UPLOAD_DIR ?? "./uploads",
+    // Tests get their own directory so seeders and fixtures never touch development uploads.
+    dir: process.env.UPLOAD_DIR ?? (process.env.NODE_ENV === "test" ? path.join(tmpdir(), "advectus-test-uploads") : "./uploads"),
     maxBytes: int(process.env.MAX_UPLOAD_MB, 512) * 1024 * 1024,
     // Sniffed on the first chunk: a CSV is text, so a NUL byte means a binary file was sent.
     sniffBytes: 8 * 1024,
