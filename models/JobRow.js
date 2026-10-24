@@ -14,7 +14,7 @@ export const initJobRow = (sequelize) =>
       rowNumber: { type: DataTypes.INTEGER, allowNull: false, primaryKey: true }, // 1-based, data rows only
       line: { type: DataTypes.INTEGER, allowNull: false }, // physical line in the CSV, for error reports
       input: { type: DataTypes.JSONB, allowNull: false }, // { businessId: {input, normalized, valid, reason} | null, name }
-      status: { type: DataTypes.ENUM(...Object.values(ROW_STATUS)), allowNull: false, defaultValue: ROW_STATUS.PENDING },
+      status: { type: DataTypes.ENUM(...Object.values(ROW_STATUS)), allowNull: false, defaultValue: ROW_STATUS.QUEUED },
       result: { type: DataTypes.JSONB, allowNull: true }, // company + customer + provenance once enriched
       error: { type: DataTypes.TEXT, allowNull: true },
     },

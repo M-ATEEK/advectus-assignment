@@ -48,6 +48,8 @@ const config = {
     chunkSize: int(process.env.CHUNK_SIZE, 1000),
     rowBatchSize: int(process.env.ROW_BATCH_SIZE, 1000),
     usabilityScanRows: int(process.env.USABILITY_SCAN_ROWS, 200),
+    retryPendingDelayMs: int(process.env.RETRY_PENDING_DELAY_MS, 5 * 60 * 1000),
+    retryPendingMaxAttempts: int(process.env.RETRY_PENDING_MAX_ATTEMPTS, 10),
   },
 
   customer: {

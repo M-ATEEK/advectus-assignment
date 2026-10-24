@@ -6,20 +6,25 @@ import { QUEUE_NAME } from "../constants/jobs.js";
 import { sequelize } from "../models/index.js";
 import { jobs } from "../jobs/index.js";
 import { createQueue, createRedisConnection } from "../jobs/queue.js";
+import { createYtjClient } from "../services/ytjClient.js";
+import { createCompanyLookup } from "../services/companyLookup.js";
 import { JOB_NAMES } from "../constants/jobs.js";
+
+const queue = createQueue();
+const lookup = createCompanyLookup({ ytj: createYtjClient() });
 
 const worker = new Worker(
   QUEUE_NAME,
   async (job) => {
     const definition = jobs[job.name];
     if (!definition) throw new Error(`No handler registered for job "${job.name}"`);
-    return definition.handle(job.data, { log: logger.child({ queueJobId: job.id, job: job.name, ...job.data }) });
+    const log = logger.child({ queueJobId: job.id, job: job.name, ...job.data });
+    return definition.handle(job.data, { log, queue, lookup });
   },
   { connection: createRedisConnection(), concurrency: config.queue.concurrency },
 );
 
 // Daily register refresh (BullMQ job scheduler: one repeatable definition, upserted on every start).
-const queue = createQueue();
 await queue.upsertJobScheduler(
   "daily-dataset-refresh",
   { pattern: config.dataset.cron, tz: config.dataset.timezone },

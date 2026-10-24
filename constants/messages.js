@@ -154,6 +154,7 @@ export const MESSAGES = Object.freeze({
   ENRICHMENT_QUEUED: "Enrichment job created and queued.",
   ENRICHMENT_FETCHED: "Enrichment job fetched.",
   ENRICHMENT_ROWS_FETCHED: "Enrichment rows fetched.",
+  ENRICHMENT_RESULTS_FETCHED: "Enrichment results fetched.",
   DATASET_FETCHED: "Dataset status fetched.",
   DATASET_REFRESH_QUEUED: "Dataset refresh queued.",
 });

@@ -48,5 +48,23 @@ export const createEnrichmentService = ({ uploads, inspector, queue }) => {
     return { rows, pagination: { page, limit, total: count, pages: Math.ceil(count / limit) } };
   };
 
-  return { create, get, listRows };
+  /** Rows with their result flattened: what a client consumes after the job is done. */
+  const listResults = async (id, { status, page, limit }) => {
+    const { rows, pagination } = await listRows(id, { status, page, limit });
+    const results = rows.map(({ rowNumber, line, input, status: rowStatus, result, error }) => ({
+      rowNumber,
+      line,
+      input,
+      status: rowStatus,
+      confidence: result?.confidence ?? null,
+      warnings: result?.warnings ?? [],
+      company: result?.company ?? null, // normalized PRH data
+      customer: result?.customer ?? null, // customer-register record
+      candidates: result?.candidates ?? null, // only for ambiguous rows
+      error,
+    }));
+    return { results, pagination };
+  };
+
+  return { create, get, listRows, listResults };
 };

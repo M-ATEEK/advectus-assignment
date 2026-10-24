@@ -9,7 +9,8 @@ export const JOB_STATUS = Object.freeze({
 });
 
 export const ROW_STATUS = Object.freeze({
-  PENDING: "pending",
+  QUEUED: "queued", // stored, waiting for a resolve-rows chunk
+  PENDING: "pending", // looked up, but PRH was unavailable and nothing local existed; retried later
   MATCHED: "matched",
   AMBIGUOUS: "ambiguous",
   NOT_FOUND: "not_found",
@@ -22,6 +23,17 @@ export const QUEUE_NAME = "enrichment";
 export const JOB_NAMES = Object.freeze({
   SPLIT_CSV: "split-csv",
   LOAD_DATASET: "load-dataset",
+  RESOLVE_ROWS: "resolve-rows",
+  FINALIZE_JOB: "finalize-job",
+});
+
+export const MATCH_CONFIDENCE = Object.freeze({ BUSINESS_ID: "business-id", NAME_EXACT: "name-exact" });
+
+export const ROW_WARNING = Object.freeze({
+  INVALID_BUSINESS_ID: "INVALID_BUSINESS_ID", // checksum/format failed; matched by name instead
+  ID_NOT_FOUND_USED_NAME: "ID_NOT_FOUND_USED_NAME",
+  NAME_MISMATCH: "NAME_MISMATCH", // matched by id, but the CSV name is not one of the company's current names
+  PRH_UNAVAILABLE: "PRH_UNAVAILABLE",
 });
 
 export const DATASET_STATUS = Object.freeze({

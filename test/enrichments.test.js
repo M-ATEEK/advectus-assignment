@@ -10,6 +10,7 @@ import { closeDatabase, resetDatabase, startTestApp, stopTestApp } from "./helpe
 
 const SAMPLE = new URL("../data/sample-companies.csv", import.meta.url);
 const silentLog = { info() {}, warn() {}, error() {}, debug() {} };
+const ctx = () => ({ log: silentLog, queue: { add: async () => ({}) } });
 const CSV_MIN = "business_id;company_name\n0112038-9;Nokia Oyj\n";
 let server, baseUrl, dir, queue;
 
@@ -75,11 +76,11 @@ test("split-csv job stores every data row and leaves the job ready", async () =>
   const uploadId = await uploadText(await readFile(SAMPLE, "utf8"));
   const { job } = (await (await createEnrichment({ uploadId })).json()).data;
 
-  const result = await splitCsvJob.handle({ jobId: job.id }, { log: silentLog });
+  const result = await splitCsvJob.handle({ jobId: job.id }, ctx());
   assert.equal(result.totalRows, 30);
 
   const stored = await Job.findByPk(job.id);
-  assert.equal(stored.status, "ready");
+  assert.equal(stored.status, "running", "rows stored and resolve chunks queued");
   assert.equal(stored.totalRows, 30);
   assert.deepEqual(stored.counters, {
     emptyRows: 2,
@@ -87,7 +88,7 @@ test("split-csv job stores every data row and leaves the job ready", async () =>
     withName: 27,
     invalidBusinessIds: 2,
     invalidRows: 0,
-    pendingRows: 30,
+    queuedRows: 30,
   });
   assert.equal(stored.format.delimiter, ";");
   assert.deepEqual(stored.format.columns.businessId, { index: 0, header: "business_id" });
@@ -101,31 +102,31 @@ test("split-csv job stores every data row and leaves the job ready", async () =>
   assert.equal(fiPrefixed.input.businessId.normalized, "0112038-9");
   const badChecksum = rows.find((r) => r.input.businessId?.input === "0112038-8");
   assert.deepEqual(badChecksum.input.businessId, { input: "0112038-8", normalized: "0112038-8", valid: false, reason: "CHECKSUM" });
-  assert.equal(badChecksum.status, "pending", "still pending: it has a name to fall back to");
+  assert.equal(badChecksum.status, "queued", "still resolvable: it has a name to fall back to");
 });
 
 test("split-csv marks rows with nothing to look up as invalid and is re-runnable", async () => {
   const uploadId = await uploadText("business_id;company_name\nABC-123;\n0112038-9;Nokia Oyj\n;\n");
   const { job } = (await (await createEnrichment({ uploadId })).json()).data;
 
-  await splitCsvJob.handle({ jobId: job.id }, { log: silentLog });
-  await splitCsvJob.handle({ jobId: job.id }, { log: silentLog }); // retry must not duplicate rows
+  await splitCsvJob.handle({ jobId: job.id }, ctx());
+  await splitCsvJob.handle({ jobId: job.id }, ctx()); // retry must not duplicate rows
 
   const rows = await JobRow.findAll({ where: { jobId: job.id }, order: [["rowNumber", "ASC"]], raw: true });
-  assert.deepEqual(rows.map((r) => r.status), ["invalid", "pending"]);
+  assert.deepEqual(rows.map((r) => r.status), ["invalid", "queued"]);
   const stored = await Job.findByPk(job.id);
   assert.equal(stored.counters.invalidRows, 1);
-  assert.equal(stored.counters.pendingRows, 1);
+  assert.equal(stored.counters.queuedRows, 1);
   assert.equal(stored.counters.emptyRows, 1);
 });
 
 test("GET /enrichments/:id and /rows return the stored state with pagination and status filter", async () => {
   const uploadId = await uploadText(await readFile(SAMPLE, "utf8"));
   const { job } = (await (await createEnrichment({ uploadId })).json()).data;
-  await splitCsvJob.handle({ jobId: job.id }, { log: silentLog });
+  await splitCsvJob.handle({ jobId: job.id }, ctx());
 
   const status = await (await fetch(`${baseUrl}/enrichments/${job.id}`)).json();
-  assert.equal(status.data.job.status, "ready");
+  assert.equal(status.data.job.status, "running");
   assert.equal(status.data.job.totalRows, 30);
 
   const page2 = await (await fetch(`${baseUrl}/enrichments/${job.id}/rows?page=2&limit=10`)).json();
@@ -134,8 +135,8 @@ test("GET /enrichments/:id and /rows return the stored state with pagination and
   assert.deepEqual(page2.meta.pagination, { page: 2, limit: 10, total: 30, pages: 3 });
   assert.equal(page2.data.rows[0].jobId, undefined, "row DTO omits the job id");
 
-  const pending = await (await fetch(`${baseUrl}/enrichments/${job.id}/rows?status=pending&limit=1000`)).json();
-  assert.equal(pending.meta.pagination.total, 30);
+  const queued = await (await fetch(`${baseUrl}/enrichments/${job.id}/rows?status=queued&limit=1000`)).json();
+  assert.equal(queued.meta.pagination.total, 30);
   const invalid = await (await fetch(`${baseUrl}/enrichments/${job.id}/rows?status=invalid`)).json();
   assert.equal(invalid.meta.pagination.total, 0);
 });
@@ -165,7 +166,7 @@ test("GET /enrichments/:id → 404 for unknown, 400 for bad id or bad row filter
   await expectError(await fetch(`${baseUrl}/enrichments/00000000-0000-4000-8000-000000000000`), 404, "ENRICHMENT_NOT_FOUND");
   await expectError(await fetch(`${baseUrl}/enrichments/nope`), 400, "VALIDATION_FAILED");
   const body = await expectError(
-    await fetch(`${baseUrl}/enrichments/00000000-0000-4000-8000-000000000000/rows?status=weird&limit=5000`),
+    await fetch(`${baseUrl}/enrichments/00000000-0000-4000-8000-000000000000/rows?status=weird&limit=9999`),
     400,
     "VALIDATION_FAILED",
   );

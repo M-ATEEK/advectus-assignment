@@ -19,22 +19,27 @@ export const toCompanyRow = (raw, { source, datasetVersionId = null, fetchedAt }
   };
 };
 
-const UPSERT_SQL = `
+const INSERT_SQL = `
   INSERT INTO companies (business_id, name, name_norm, alt_names_norm, active, data, source, dataset_version_id, fetched_at)
   SELECT business_id, name, name_norm, alt_names_norm, active, data, source::enum_companies_source, dataset_version_id, fetched_at
   FROM jsonb_to_recordset($1::jsonb) AS t(
     business_id text, name text, name_norm text, alt_names_norm text[], active boolean,
     data jsonb, source text, dataset_version_id integer, fetched_at timestamptz
-  )
+  )`;
+const ON_CONFLICT_UPDATE = `
   ON CONFLICT (business_id) DO UPDATE SET
     name = EXCLUDED.name, name_norm = EXCLUDED.name_norm, alt_names_norm = EXCLUDED.alt_names_norm,
     active = EXCLUDED.active, data = EXCLUDED.data, source = EXCLUDED.source,
     dataset_version_id = EXCLUDED.dataset_version_id, fetched_at = EXCLUDED.fetched_at`;
+const ON_CONFLICT_IGNORE = " ON CONFLICT (business_id) DO NOTHING";
 
-/** One statement per batch: the batch travels as a single JSON parameter, so no per-row escaping or placeholders. */
-export const upsertCompanies = async (rows) => {
+/**
+ * One statement per batch: the batch travels as a single JSON parameter, so no per-row escaping or placeholders.
+ * The register load overwrites; API write-through only fills gaps (`overwrite: false`), the daily dump stays the truth.
+ */
+export const upsertCompanies = async (rows, { overwrite = true } = {}) => {
   if (rows.length === 0) return;
-  await sequelize.query(UPSERT_SQL, { bind: [JSON.stringify(rows)] });
+  await sequelize.query(INSERT_SQL + (overwrite ? ON_CONFLICT_UPDATE : ON_CONFLICT_IGNORE), { bind: [JSON.stringify(rows)] });
 };
 
 /** Local register lookup by business ID. */
@@ -43,12 +48,25 @@ export const findLocalCompany = async (businessId) => {
   return row ? row.get({ plain: true }) : null;
 };
 
-/** Stores raw PRH records fetched from the API so the next lookup is local. Returns the stored rows. */
+/** Local register lookup by exact folded name, on the primary name or any current parallel/auxiliary name. */
+export const findLocalByName = async (nameNorm) => {
+  const rows = await Company.findAll({
+    where: sequelize.literal("name_norm = $name OR alt_names_norm @> ARRAY[$name]::varchar[]"),
+    bind: { name: nameNorm },
+    limit: 10,
+    raw: true,
+  });
+  return rows;
+};
+
+/**
+ * Stores PRH records the local register does not have yet, so the next lookup is local.
+ * Existing rows are left untouched. Returns the companies as they are now stored (dump or api).
+ */
 export const saveApiCompanies = async (raws) => {
-  const fetchedAt = new Date();
-  const rows = raws.map((raw) => toCompanyRow(raw, { source: COMPANY_SOURCE.API, fetchedAt }));
-  await upsertCompanies(rows);
-  return rows.map((r) => ({ businessId: r.business_id, name: r.name, active: r.active, data: r.data, source: r.source, datasetVersionId: null, fetchedAt }));
+  const rows = raws.map((raw) => toCompanyRow(raw, { source: COMPANY_SOURCE.API, fetchedAt: new Date() }));
+  await upsertCompanies(rows, { overwrite: false });
+  return Company.findAll({ where: { businessId: rows.map((r) => r.business_id) }, raw: true });
 };
 
 /** Removes dump rows that an older load wrote and the new dump no longer contains. API-fetched rows are kept. */

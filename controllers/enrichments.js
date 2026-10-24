@@ -40,6 +40,18 @@ export const createEnrichmentController = ({ enrichments }) => ({
     return sendSuccess(res, { message: MESSAGES.ENRICHMENT_FETCHED, data: { job: toJobDto(job), links: links(req, job.id) } });
   },
 
+  /** GET /enrichments/:id/results?status=&page=&limit= — normalized companies + customer records per row. */
+  listResults: async (req, res) => {
+    const { id, status, page = 1, limit = 1000 } = req.validated;
+    const job = await enrichments.get(id);
+    const { results, pagination } = await enrichments.listResults(id, { status, page, limit });
+    return sendSuccess(res, {
+      message: MESSAGES.ENRICHMENT_RESULTS_FETCHED,
+      data: { job: toJobDto(job), results },
+      meta: { pagination },
+    });
+  },
+
   /** GET /enrichments/:id/rows?status=&page=&limit= — stored rows, paginated. */
   listRows: async (req, res) => {
     const { id, status, page = 1, limit = 100 } = req.validated;

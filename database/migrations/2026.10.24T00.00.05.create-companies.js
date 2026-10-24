@@ -1,8 +1,7 @@
 import { DataTypes } from "sequelize";
 import { COMPANY_SOURCE } from "../../constants/jobs.js";
 
-export const up = async ({ context: { queryInterface, sequelize } }) => {
-  await sequelize.query("CREATE EXTENSION IF NOT EXISTS pg_trgm");
+export const up = async ({ context: { queryInterface } }) => {
   await queryInterface.createTable("companies", {
     business_id: { type: DataTypes.STRING(9), primaryKey: true },
     name: { type: DataTypes.STRING(255), allowNull: true },
@@ -16,7 +15,6 @@ export const up = async ({ context: { queryInterface, sequelize } }) => {
   });
   await queryInterface.addIndex("companies", ["name_norm"]); // exact name match
   await queryInterface.addIndex("companies", ["alt_names_norm"], { using: "gin" }); // exact match on parallel/auxiliary names
-  await sequelize.query("CREATE INDEX companies_name_norm_trgm ON companies USING gin (name_norm gin_trgm_ops)"); // fuzzy names
   await queryInterface.addIndex("companies", ["dataset_version_id"]);
 };
 

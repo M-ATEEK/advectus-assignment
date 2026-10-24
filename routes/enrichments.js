@@ -10,6 +10,7 @@ export const createEnrichmentsRouter = ({ enrichments }) => {
   router.post("/enrichments", createEnrichmentValidator(), validate, controller.create);
   router.get("/enrichments/:id", enrichmentIdValidator(), validate, controller.get);
   router.get("/enrichments/:id/rows", listRowsValidator(), validate, controller.listRows);
+  router.get("/enrichments/:id/results", listRowsValidator(), validate, controller.listResults);
 
   return router;
 };

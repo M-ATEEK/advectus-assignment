@@ -21,6 +21,7 @@ test("migrations apply from scratch and the models fit the migrated schema", asy
       "2026.10.24T00.00.03.create-job-rows.js",
       "2026.10.24T00.00.04.create-dataset-versions.js",
       "2026.10.24T00.00.05.create-companies.js",
+      "2026.10.24T00.00.06.exact-matching-and-queued-rows.js",
     ],
   );
   assert.equal((await migrator.pending()).length, 0);
@@ -33,7 +34,7 @@ test("migrations apply from scratch and the models fit the migrated schema", asy
   assert.equal(loaded.upload.id, upload.id);
   assert.equal(loaded.rows.length, 1);
   assert.equal(loaded.status, "queued");
-  assert.equal(loaded.rows[0].status, "pending");
+  assert.equal(loaded.rows[0].status, "queued");
 
   const version = await DatasetVersion.create({ source: "test" });
   await Company.create({ businessId: "0112038-9", name: "Nokia Oyj", nameNorm: "nokia oyj", active: true, data: {}, source: "dump", datasetVersionId: version.id, fetchedAt: new Date() });

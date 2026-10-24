@@ -1,4 +1,5 @@
-import { findLocalCompany, saveApiCompanies } from "./companies.js";
+import { normalizeName } from "../domain/names.js";
+import { findLocalByName, findLocalCompany, saveApiCompanies } from "./companies.js";
 
 /**
  * One place to find a company: the local register first, PRH's API only on a miss, and every API hit is
@@ -15,9 +16,18 @@ export const createCompanyLookup = ({ ytj }) => ({
     return saved;
   },
 
-  /** @returns {Promise<object[]>} PRH name-search hits, all written through to the local register. */
-  async searchByNameRemote(name) {
+  /**
+   * Exact match on the folded name (primary or alias). Local register first; on no hit, one PRH name search whose
+   * results are written through and then filtered the same exact way. Returns 0, 1 or several candidates.
+   */
+  async findByName(name) {
+    const nameNorm = normalizeName(name);
+    if (!nameNorm) return [];
+    const local = await findLocalByName(nameNorm);
+    if (local.length) return local;
     const raws = await ytj.searchByName(name);
-    return raws.length ? saveApiCompanies(raws) : [];
+    if (!raws.length) return [];
+    const saved = await saveApiCompanies(raws);
+    return saved.filter((c) => c.nameNorm === nameNorm || c.altNamesNorm.includes(nameNorm));
   },
 });
