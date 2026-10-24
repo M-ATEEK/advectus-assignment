@@ -1,0 +1,38 @@
+{
+  "name": "advectus-assignment",
+  "version": "0.1.0",
+  "description": "Business ID enrichment service: enriches CSV lists of Finnish companies from PRH open data (YTJ) and maps them to customer-register records",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24.0.0",
+    "npm": ">=11.0.0"
+  },
+  "scripts": {
+    "start": "node bin/www.js",
+    "dev": "node --watch --env-file-if-exists=.env bin/www.js",
+    "lint": "eslint .",
+    "test": "NODE_ENV=test LOG_LEVEL=silent node --test test/**/*.test.js",
+    "test:watch": "NODE_ENV=test LOG_LEVEL=silent node --test --watch test/**/*.test.js"
+  },
+  "dependencies": {
+    "bullmq": "^6.4.1",
+    "cors": "^2.8.6",
+    "csv-parse": "^7.0.3",
+    "dotenv": "^18.0.9",
+    "express": "^5.3.0",
+    "http-errors": "^2.0.1",
+    "ioredis": "^6.0.0",
+    "pg": "^8.23.1",
+    "pg-copy-streams": "^7.0.0",
+    "pino": "^10.4.0",
+    "pino-http": "^11.0.0",
+    "yauzl": "^3.4.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.13.0",
+    "globals": "^17.13.0",
+    "pino-pretty": "^13.2.0"
+  }
+}
