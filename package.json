@@ -18,6 +18,9 @@
     "db:seed": "node bin/db.js seed",
     "db:reset": "node bin/db.js reset",
     "dataset:load": "node bin/dataset.js load",
+    "web:install": "npm --prefix web install",
+    "web:dev": "npm --prefix web run dev",
+    "web:build": "npm --prefix web run build",
     "lint": "eslint .",
     "test": "NODE_ENV=test LOG_LEVEL=silent node --test --test-concurrency=1 \"test/**/*.test.js\"",
     "test:watch": "NODE_ENV=test LOG_LEVEL=silent node --test --watch --test-concurrency=1 \"test/**/*.test.js\""

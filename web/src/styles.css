@@ -1,0 +1,20 @@
+:root { font-family: system-ui, sans-serif; color: #1f2933; background: #f7f8fa; }
+main { max-width: 1100px; margin: 2rem auto; padding: 0 1rem; }
+h1 { margin-bottom: 0.25rem; }
+h2 { font-size: 1.1rem; margin-top: 2rem; }
+section { background: #fff; border: 1px solid #e3e7eb; border-radius: 8px; padding: 1rem 1.25rem; margin-top: 1rem; }
+button { margin-left: 0.5rem; padding: 0.4rem 0.9rem; border: 0; border-radius: 6px; background: #1d4ed8; color: #fff; cursor: pointer; }
+button:disabled { background: #9db0e8; cursor: default; }
+.card { margin-top: 1rem; padding: 0.75rem 1rem; background: #f3f5f8; border-radius: 6px; }
+.card p { margin: 0.3rem 0; }
+.muted { color: #6b7280; }
+.error { color: #b91c1c; }
+.warnings { margin: 0.5rem 0 0; padding-left: 1.2rem; color: #92400e; }
+table { width: 100%; border-collapse: collapse; margin-top: 1rem; font-size: 0.9rem; }
+th, td { text-align: left; padding: 0.4rem 0.5rem; border-bottom: 1px solid #e3e7eb; vertical-align: top; }
+th { background: #f3f5f8; }
+.badge { display: inline-block; padding: 0.1rem 0.5rem; border-radius: 999px; font-size: 0.8rem; background: #e5e7eb; }
+.badge.matched, .badge.done { background: #d1fae5; color: #065f46; }
+.badge.ambiguous, .badge.partial, .badge.pending { background: #fef3c7; color: #92400e; }
+.badge.not_found, .badge.invalid, .badge.error, .badge.failed { background: #fee2e2; color: #991b1b; }
+.badge.queued, .badge.splitting, .badge.ready, .badge.running { background: #dbeafe; color: #1e40af; }

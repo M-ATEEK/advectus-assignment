@@ -1,4 +1,5 @@
 import express from "express";
+import { existsSync } from "node:fs";
 import pinoHttp from "pino-http";
 import { randomUUID } from "node:crypto";
 import { logger } from "./config/logger.js";
@@ -41,6 +42,10 @@ export const createApp = (overrides = {}) => {
   app.use(express.urlencoded({ extended: false }));
 
   mountRoutes(app, deps);
+
+  // The React page, when built (npm run web:build). In development Vite serves it on :5173 and proxies /api here.
+  const webDist = new URL("./web/dist", import.meta.url).pathname;
+  if (existsSync(webDist)) app.use(express.static(webDist));
 
   app.use(notFound);
   app.use(errorHandler);
