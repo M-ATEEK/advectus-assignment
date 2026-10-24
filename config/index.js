@@ -29,7 +29,13 @@ const config = {
     chunkSize: int(process.env.CHUNK_SIZE, 1000),
     datasetMaxAgeHours: int(process.env.DATASET_MAX_AGE_H, 24),
     datasetCron: process.env.DATASET_CRON ?? "30 5 * * *",
-    uploadDir: process.env.UPLOAD_DIR ?? "./uploads",
+  },
+
+  uploads: {
+    dir: process.env.UPLOAD_DIR ?? "./uploads",
+    maxBytes: int(process.env.MAX_UPLOAD_MB, 512) * 1024 * 1024,
+    // Sniffed on the first chunk: a CSV is text, so a NUL byte means a binary file was sent.
+    sniffBytes: 8 * 1024,
   },
 };
 

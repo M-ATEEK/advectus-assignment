@@ -1,5 +1,6 @@
-import createError from "http-errors";
+import { ApiError } from "../utils/ApiError.js";
+import { ERRORS } from "../constants/messages.js";
 
 export const notFound = (req, _res, next) => {
-  next(createError(404, `Route ${req.method} ${req.originalUrl} not found`));
+  next(ApiError.from(ERRORS.ROUTE_NOT_FOUND, { params: { method: req.method, path: req.originalUrl } }));
 };
