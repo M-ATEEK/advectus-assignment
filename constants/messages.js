@@ -95,6 +95,28 @@ export const ERRORS = Object.freeze({
     message: "The uploaded CSV cannot be enriched: {reasons}",
   },
 
+  // --- dataset ---
+  DATASET_REFRESH_IN_PROGRESS: {
+    code: "DATASET_REFRESH_IN_PROGRESS",
+    status: HTTP_STATUS.CONFLICT,
+    message: "A dataset refresh started at {startedAt} is still running.",
+  },
+  DATASET_TOO_SMALL: {
+    code: "DATASET_TOO_SMALL",
+    status: HTTP_STATUS.UNPROCESSABLE_ENTITY,
+    message: "Dataset has {count} records, below the required minimum of {min}; not loaded.",
+  },
+  DATASET_FILE_TOO_SMALL: {
+    code: "DATASET_FILE_TOO_SMALL",
+    status: HTTP_STATUS.UNPROCESSABLE_ENTITY,
+    message: "Dataset file is {bytes} bytes uncompressed, too small to hold {minRecords} records; not loaded.",
+  },
+  DATASET_ZIP_INVALID: {
+    code: "DATASET_ZIP_INVALID",
+    status: HTTP_STATUS.UNPROCESSABLE_ENTITY,
+    message: "Dataset ZIP is invalid: {reason}",
+  },
+
   // --- enrichments ---
   ENRICHMENT_NOT_FOUND: {
     code: "ENRICHMENT_NOT_FOUND",
@@ -125,4 +147,6 @@ export const MESSAGES = Object.freeze({
   ENRICHMENT_QUEUED: "Enrichment job created and queued.",
   ENRICHMENT_FETCHED: "Enrichment job fetched.",
   ENRICHMENT_ROWS_FETCHED: "Enrichment rows fetched.",
+  DATASET_FETCHED: "Dataset status fetched.",
+  DATASET_REFRESH_QUEUED: "Dataset refresh queued.",
 });

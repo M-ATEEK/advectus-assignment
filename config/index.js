@@ -33,13 +33,20 @@ const config = {
     timeoutMs: int(process.env.YTJ_TIMEOUT_MS, 10_000),
   },
 
+  dataset: {
+    url: process.env.DATASET_URL ?? `${process.env.YTJ_BASE_URL ?? "https://avoindata.prh.fi/opendata-ytj-api/v3"}/all_companies`,
+    dir: process.env.DATASET_DIR ?? (process.env.NODE_ENV === "test" ? path.join(tmpdir(), "advectus-test-dumps") : "./data/dumps"),
+    minRecords: int(process.env.DATASET_MIN_RECORDS, 400_000), // the real register has ~465k companies
+    maxAgeHours: int(process.env.DATASET_MAX_AGE_H, 24),
+    cron: process.env.DATASET_CRON ?? "30 5 * * *", // PRH generates the dump around 04:36
+    timezone: process.env.DATASET_TZ ?? "Europe/Helsinki",
+  },
+
   pipeline: {
     syncRowLimit: int(process.env.SYNC_ROW_LIMIT, 200),
     chunkSize: int(process.env.CHUNK_SIZE, 1000),
     rowBatchSize: int(process.env.ROW_BATCH_SIZE, 1000),
     usabilityScanRows: int(process.env.USABILITY_SCAN_ROWS, 200),
-    datasetMaxAgeHours: int(process.env.DATASET_MAX_AGE_H, 24),
-    datasetCron: process.env.DATASET_CRON ?? "30 5 * * *",
   },
 
   customer: {

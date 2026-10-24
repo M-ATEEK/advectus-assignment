@@ -10,6 +10,7 @@ import config from "./config/index.js";
 import { createUploadService } from "./services/uploads.js";
 import { createInspectService } from "./services/inspect.js";
 import { createEnrichmentService } from "./services/enrichments.js";
+import { createDatasetService } from "./services/dataset.js";
 import { createQueue } from "./jobs/queue.js";
 
 export const createApp = (overrides = {}) => {
@@ -22,6 +23,7 @@ export const createApp = (overrides = {}) => {
     inspector,
     queue,
     enrichments: overrides.enrichments ?? createEnrichmentService({ uploads, inspector, queue }),
+    dataset: overrides.dataset ?? createDatasetService({ queue }),
   };
 
   app.disable("x-powered-by");

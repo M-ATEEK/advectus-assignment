@@ -17,6 +17,7 @@ data/*
 *.zip
 *.zip.*
 docs/*.zip
+!test/fixtures/**/*.zip
 data/dumps/
 data/*.json
 uploads/

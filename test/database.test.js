@@ -1,11 +1,13 @@
 import { test, before, after } from "node:test";
 import assert from "node:assert/strict";
-import { sequelize, Upload, Job, JobRow } from "../models/index.js";
+import { sequelize, Upload, Job, JobRow, Company, DatasetVersion } from "../models/index.js";
 import { migrator, seeder } from "../database/umzug.js";
 
 before(async () => {
   await sequelize.getQueryInterface().dropAllTables();
-  await sequelize.query('DROP TYPE IF EXISTS "enum_jobs_status"; DROP TYPE IF EXISTS "enum_job_rows_status";');
+  await sequelize.query(
+    'DROP TYPE IF EXISTS "enum_jobs_status"; DROP TYPE IF EXISTS "enum_job_rows_status"; DROP TYPE IF EXISTS "enum_dataset_versions_status"; DROP TYPE IF EXISTS "enum_companies_source";',
+  );
 });
 after(() => sequelize.close());
 
@@ -13,7 +15,13 @@ test("migrations apply from scratch and the models fit the migrated schema", asy
   const applied = await migrator.up();
   assert.deepEqual(
     applied.map((m) => m.name),
-    ["2026.10.24T00.00.01.create-uploads.js", "2026.10.24T00.00.02.create-jobs.js", "2026.10.24T00.00.03.create-job-rows.js"],
+    [
+      "2026.10.24T00.00.01.create-uploads.js",
+      "2026.10.24T00.00.02.create-jobs.js",
+      "2026.10.24T00.00.03.create-job-rows.js",
+      "2026.10.24T00.00.04.create-dataset-versions.js",
+      "2026.10.24T00.00.05.create-companies.js",
+    ],
   );
   assert.equal((await migrator.pending()).length, 0);
 
@@ -26,6 +34,10 @@ test("migrations apply from scratch and the models fit the migrated schema", asy
   assert.equal(loaded.rows.length, 1);
   assert.equal(loaded.status, "queued");
   assert.equal(loaded.rows[0].status, "pending");
+
+  const version = await DatasetVersion.create({ source: "test" });
+  await Company.create({ businessId: "0112038-9", name: "Nokia Oyj", nameNorm: "nokia oyj", active: true, data: {}, source: "dump", datasetVersionId: version.id, fetchedAt: new Date() });
+  assert.equal((await Company.findByPk("0112038-9")).datasetVersionId, version.id);
 });
 
 test("seeder creates the demo upload and is reversible", async () => {

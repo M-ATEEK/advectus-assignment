@@ -21,4 +21,15 @@ export const QUEUE_NAME = "enrichment";
 
 export const JOB_NAMES = Object.freeze({
   SPLIT_CSV: "split-csv",
+  LOAD_DATASET: "load-dataset",
 });
+
+export const DATASET_STATUS = Object.freeze({
+  LOADING: "loading",
+  LIVE: "live",
+  UNCHANGED: "unchanged", // same file as the live version, nothing loaded
+  SUPERSEDED: "superseded",
+  FAILED: "failed",
+});
+
+export const COMPANY_SOURCE = Object.freeze({ DUMP: "dump", API: "api" });
