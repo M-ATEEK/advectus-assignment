@@ -117,6 +117,13 @@ export const ERRORS = Object.freeze({
     message: "Dataset ZIP is invalid: {reason}",
   },
 
+  // --- PRH API ---
+  YTJ_UNAVAILABLE: {
+    code: "YTJ_UNAVAILABLE",
+    status: HTTP_STATUS.SERVICE_UNAVAILABLE,
+    message: "PRH open data API is unavailable: {reason}",
+  },
+
   // --- enrichments ---
   ENRICHMENT_NOT_FOUND: {
     code: "ENRICHMENT_NOT_FOUND",

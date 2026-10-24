@@ -1,7 +1,7 @@
 import { normalizeCompany } from "../domain/normalizeCompany.js";
 import { normalizeName } from "../domain/names.js";
 import { COMPANY_SOURCE } from "../constants/jobs.js";
-import { sequelize } from "../models/index.js";
+import { Company, sequelize } from "../models/index.js";
 
 /** Raw PRH record → one companies row. */
 export const toCompanyRow = (raw, { source, datasetVersionId = null, fetchedAt }) => {
@@ -35,6 +35,20 @@ const UPSERT_SQL = `
 export const upsertCompanies = async (rows) => {
   if (rows.length === 0) return;
   await sequelize.query(UPSERT_SQL, { bind: [JSON.stringify(rows)] });
+};
+
+/** Local register lookup by business ID. */
+export const findLocalCompany = async (businessId) => {
+  const row = await Company.findByPk(businessId);
+  return row ? row.get({ plain: true }) : null;
+};
+
+/** Stores raw PRH records fetched from the API so the next lookup is local. Returns the stored rows. */
+export const saveApiCompanies = async (raws) => {
+  const fetchedAt = new Date();
+  const rows = raws.map((raw) => toCompanyRow(raw, { source: COMPANY_SOURCE.API, fetchedAt }));
+  await upsertCompanies(rows);
+  return rows.map((r) => ({ businessId: r.business_id, name: r.name, active: r.active, data: r.data, source: r.source, datasetVersionId: null, fetchedAt }));
 };
 
 /** Removes dump rows that an older load wrote and the new dump no longer contains. API-fetched rows are kept. */

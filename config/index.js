@@ -31,6 +31,7 @@ const config = {
     baseUrl: process.env.YTJ_BASE_URL ?? "https://avoindata.prh.fi/opendata-ytj-api/v3",
     ratePerSec: int(process.env.YTJ_RATE_PER_SEC, 4),
     timeoutMs: int(process.env.YTJ_TIMEOUT_MS, 10_000),
+    retries: int(process.env.YTJ_RETRIES, 2),
   },
 
   dataset: {
