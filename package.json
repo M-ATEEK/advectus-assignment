@@ -12,8 +12,8 @@
     "start": "node bin/www.js",
     "dev": "node --watch --env-file-if-exists=.env bin/www.js",
     "lint": "eslint .",
-    "test": "NODE_ENV=test LOG_LEVEL=silent node --test test/**/*.test.js",
-    "test:watch": "NODE_ENV=test LOG_LEVEL=silent node --test --watch test/**/*.test.js"
+    "test": "NODE_ENV=test LOG_LEVEL=silent node --test \"test/**/*.test.js\"",
+    "test:watch": "NODE_ENV=test LOG_LEVEL=silent node --test --watch \"test/**/*.test.js\""
   },
   "dependencies": {
     "bullmq": "^6.4.1",

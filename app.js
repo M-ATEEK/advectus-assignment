@@ -8,11 +8,13 @@ import { notFound } from "./middleware/notFound.js";
 import { errorHandler } from "./middleware/errorHandler.js";
 import config from "./config/index.js";
 import { createUploadService } from "./services/uploads.js";
+import { createInspectService } from "./services/inspect.js";
 
 export const createApp = (overrides = {}) => {
   const app = express();
   const deps = {
     uploads: overrides.uploads ?? createUploadService(config.uploads),
+    inspector: overrides.inspector ?? createInspectService(),
   };
 
   app.disable("x-powered-by");

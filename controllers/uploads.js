@@ -1,5 +1,6 @@
-import { MESSAGES } from "../constants/messages.js";
-import { sendCreated } from "../utils/apiResponse.js";
+import { ApiError } from "../utils/ApiError.js";
+import { ERRORS, MESSAGES } from "../constants/messages.js";
+import { sendCreated, sendSuccess } from "../utils/apiResponse.js";
 import { readSingleFile } from "../services/multipart.js";
 import { MULTIPART, baseContentType } from "../validators/uploads.js";
 
@@ -13,7 +14,7 @@ const toUploadDto = ({ id, fileName, contentType, bytes, sha256, receivedAt }) =
   receivedAt,
 });
 
-export const createUploadController = ({ uploads }) => ({
+export const createUploadController = ({ uploads, inspector }) => ({
   /** POST /uploads — multipart/form-data with a "file" part, or a raw CSV body. */
   create: async (req, res) => {
     const contentType = baseContentType(req.headers["content-type"]);
@@ -33,6 +34,20 @@ export const createUploadController = ({ uploads }) => ({
       message: MESSAGES.UPLOAD_RECEIVED,
       data: { upload: toUploadDto(upload) },
       location: `${req.baseUrl}/uploads/${upload.id}`,
+    });
+  },
+
+  /** GET /uploads/:id/inspect — what the pipeline would understand from the stored CSV. */
+  inspect: async (req, res) => {
+    const upload = await uploads.find(req.params.id);
+    if (!upload) throw ApiError.from(ERRORS.UPLOAD_NOT_FOUND, { params: { id: req.params.id } });
+
+    const { maxRows, sampleSize } = req.query;
+    const inspection = await inspector.inspect(upload.path, { maxRows, sampleSize });
+
+    return sendSuccess(res, {
+      message: MESSAGES.UPLOAD_INSPECTED,
+      data: { upload: toUploadDto(upload), inspection },
     });
   },
 });

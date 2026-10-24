@@ -120,3 +120,106 @@ test("malformed JSON on a JSON route → 400 INVALID_JSON", async () => {
   });
   await expectError(res, 400, "INVALID_JSON");
 });
+
+// ---------------------------------------------------------------- inspect
+
+const SAMPLE_PATH = new URL("../data/sample-companies.csv", import.meta.url);
+
+const uploadText = async (text, headers = {}) => {
+  const res = await post({ headers: { "content-type": "text/csv", ...headers }, body: text });
+  assert.equal(res.status, 201);
+  return (await res.json()).data.upload.id;
+};
+const inspect = (id, qs = "") => fetch(`${baseUrl}/uploads/${id}/inspect${qs}`);
+
+test("inspect understands the sample CSV: delimiter, header, columns, counts, warnings", async () => {
+  const id = await uploadText(await readFile(SAMPLE_PATH, "utf8"), { "x-file-name": "sample-companies.csv" });
+  const res = await inspect(id);
+  assert.equal(res.status, 200);
+  const { data } = await res.json();
+  assert.equal(data.upload.id, id);
+  assert.equal(data.upload.fileName, "sample-companies.csv");
+
+  const i = data.inspection;
+  assert.equal(i.usable, true);
+  assert.deepEqual(i.format, { delimiter: ";", hasBom: false, hasHeader: true, columnCount: 2 });
+  assert.deepEqual(i.columns.businessId, { index: 0, header: "business_id" });
+  assert.deepEqual(i.columns.name, { index: 1, header: "company_name" });
+  assert.deepEqual(i.columns.headers, ["business_id", "company_name"]);
+
+  assert.equal(i.rows.dataRows, 30);
+  assert.equal(i.rows.emptyRows, 2, "the ';' row and the blank line");
+  assert.equal(i.rows.withBusinessId, 23);
+  assert.equal(i.rows.withName, 27);
+  assert.equal(i.rows.withBoth, 20);
+  assert.equal(i.rows.withNeither, 0);
+  assert.equal(i.rows.validBusinessIds, 21);
+  assert.equal(i.rows.invalidBusinessIds, 2, "0112038-8 (checksum) and ABC-123 (format)");
+  assert.equal(i.rows.duplicateBusinessIds, 5, "Nokia ×4 (FI / hyphenless / short / mismatch rows) + KONE ×1");
+  assert.equal(i.rows.truncated, false);
+
+  assert.deepEqual(
+    i.businessIds.invalidExamples.map((e) => [e.value, e.reason]),
+    [["0112038-8", "CHECKSUM"], ["ABC-123", "FORMAT"]],
+  );
+  assert.equal(i.businessIds.duplicateTracking, "complete");
+  assert.deepEqual(i.warnings.map((w) => w.code).sort(), ["DUPLICATE_BUSINESS_IDS", "INVALID_BUSINESS_IDS"]);
+  assert.equal(i.samples.length, 5);
+  assert.deepEqual(i.samples[0], { line: 2, businessId: { input: "0112038-9", normalized: "0112038-9", valid: true }, name: "Nokia Oyj" });
+});
+
+test("inspect honours maxRows and sampleSize and flags truncation", async () => {
+  const id = await uploadText(await readFile(SAMPLE_PATH, "utf8"));
+  const { data } = await (await inspect(id, "?maxRows=5&sampleSize=2")).json();
+  assert.equal(data.inspection.rows.scanned, 5);
+  assert.equal(data.inspection.rows.truncated, true);
+  assert.equal(data.inspection.samples.length, 2);
+  assert.ok(data.inspection.warnings.some((w) => w.code === "TRUNCATED"));
+});
+
+test("inspect infers columns from a headerless, comma-separated, BOM-prefixed file", async () => {
+  const id = await uploadText("﻿Nokia Oyj,0112038-9\r\nKONE Oyj,1927400-1\r\nTikkurila Oyj,\r\n");
+  const { data } = await (await inspect(id)).json();
+  const i = data.inspection;
+  assert.equal(i.usable, true);
+  assert.deepEqual(i.format, { delimiter: ",", hasBom: true, hasHeader: false, columnCount: 2 });
+  assert.equal(i.columns.businessId.index, 1);
+  assert.equal(i.columns.name.index, 0);
+  assert.equal(i.rows.dataRows, 3);
+  assert.ok(i.warnings.some((w) => w.code === "NO_HEADER"));
+});
+
+test("inspect reports a header-only file as unusable instead of failing", async () => {
+  const id = await uploadText("business_id;company_name\n");
+  const res = await inspect(id);
+  assert.equal(res.status, 200);
+  const i = (await res.json()).data.inspection;
+  assert.equal(i.usable, false);
+  assert.equal(i.format.hasHeader, true);
+  assert.equal(i.columns.businessId.index, 0);
+  assert.equal(i.rows.dataRows, 0);
+  assert.deepEqual(i.warnings.map((w) => w.code), ["NO_DATA_ROWS"]);
+});
+
+test("inspect of an unrecognised header falls back to inferring a name column and says so", async () => {
+  const id = await uploadText("city;country\nEspoo;FI\nHelsinki;FI\n");
+  const i = (await (await inspect(id)).json()).data.inspection;
+  assert.equal(i.usable, true, "a text column is treated as names; the client sees NO_HEADER and NO_BUSINESS_ID_COLUMN");
+  assert.equal(i.format.hasHeader, false);
+  assert.equal(i.columns.businessId, null);
+  assert.equal(i.columns.name.index, 0);
+  assert.deepEqual(i.warnings.map((w) => w.code).sort(), ["NO_BUSINESS_ID_COLUMN", "NO_HEADER"]);
+});
+
+test("inspect of an unknown upload → 404 UPLOAD_NOT_FOUND", async () => {
+  const res = await inspect("00000000-0000-4000-8000-000000000000");
+  const body = await expectError(res, 404, "UPLOAD_NOT_FOUND");
+  assert.match(body.error.message, /00000000-0000-4000-8000-000000000000/);
+});
+
+test("inspect with a malformed id or query → 400 VALIDATION_FAILED", async () => {
+  await expectError(await inspect("not-a-uuid"), 400, "VALIDATION_FAILED");
+  const id = await uploadText(CSV);
+  const body = await expectError(await inspect(id, "?maxRows=0&sampleSize=99"), 400, "VALIDATION_FAILED");
+  assert.deepEqual(body.error.details.map((d) => d.field).sort(), ["maxRows", "sampleSize"]);
+});

@@ -1,4 +1,4 @@
-import { header } from "express-validator";
+import { header, param, query } from "express-validator";
 
 export const MULTIPART = "multipart/form-data";
 
@@ -35,4 +35,18 @@ export const createUploadValidator = () => [
     .optional()
     .isInt({ min: 0 })
     .withMessage("Content-Length must be a non-negative integer."),
+];
+
+export const createInspectValidator = () => [
+  param("id").isUUID(4).withMessage("Upload id must be a UUID."),
+  query("maxRows")
+    .optional()
+    .isInt({ min: 1, max: 100_000_000 })
+    .withMessage("maxRows must be an integer between 1 and 100000000.")
+    .toInt(),
+  query("sampleSize")
+    .optional()
+    .isInt({ min: 0, max: 50 })
+    .withMessage("sampleSize must be an integer between 0 and 50.")
+    .toInt(),
 ];

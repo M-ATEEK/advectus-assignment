@@ -1,6 +1,6 @@
 import { createHash, randomUUID } from "node:crypto";
 import { createWriteStream } from "node:fs";
-import { mkdir, unlink } from "node:fs/promises";
+import { mkdir, readFile, stat, unlink, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { Transform } from "node:stream";
 import { pipeline } from "node:stream/promises";
@@ -17,6 +17,7 @@ const ABORT_CODES = new Set(["ERR_STREAM_PREMATURE_CLOSE", "ECONNRESET"]);
 export const createUploadService = ({ dir, maxBytes, sniffBytes = 8192 }) => {
   const ensureDir = mkdir(dir, { recursive: true });
   const limitMb = Math.round(maxBytes / 1024 / 1024);
+  const metaPath = (id) => path.join(dir, `${id}.meta.json`);
 
   const inspector = (state) =>
     new Transform({
@@ -52,7 +53,7 @@ export const createUploadService = ({ dir, maxBytes, sniffBytes = 8192 }) => {
       throw err;
     }
 
-    return {
+    const upload = {
       id,
       fileName: originalName,
       contentType,
@@ -61,7 +62,22 @@ export const createUploadService = ({ dir, maxBytes, sniffBytes = 8192 }) => {
       path: filePath,
       receivedAt: new Date().toISOString(),
     };
+    // Sidecar metadata keeps the upload self-describing until a database owns this record.
+    await writeFile(metaPath(id), JSON.stringify({ ...upload, path: undefined }), "utf8");
+    return upload;
   };
 
-  return { save, limitMb };
+  /** @returns {Promise<object|null>} the stored upload with its `path`, or null when unknown. */
+  const find = async (id) => {
+    const filePath = path.join(dir, `${id}.csv`);
+    try {
+      const [meta, fileStat] = await Promise.all([readFile(metaPath(id), "utf8").then(JSON.parse), stat(filePath)]);
+      return { ...meta, bytes: fileStat.size, path: filePath };
+    } catch (err) {
+      if (err.code === "ENOENT") return null;
+      throw err;
+    }
+  };
+
+  return { save, find, limitMb };
 };

@@ -79,9 +79,30 @@ export const ERRORS = Object.freeze({
     status: HTTP_STATUS.BAD_REQUEST,
     message: "Uploaded file is empty.",
   },
+  UPLOAD_NOT_FOUND: {
+    code: "UPLOAD_NOT_FOUND",
+    status: HTTP_STATUS.NOT_FOUND,
+    message: "No upload exists with id {id}.",
+  },
+});
+
+/** Non-fatal findings reported by CSV inspection. Codes are stable; text is for humans. */
+export const CSV_WARNINGS = Object.freeze({
+  DELIMITER_UNCERTAIN: { code: "DELIMITER_UNCERTAIN", message: "No delimiter found in the first line; assumed semicolon." },
+  NO_HEADER: { code: "NO_HEADER", message: "No header row recognised; columns were inferred from the data." },
+  NO_BUSINESS_ID_COLUMN: { code: "NO_BUSINESS_ID_COLUMN", message: "No business ID column found; rows will be matched by name only." },
+  NO_NAME_COLUMN: { code: "NO_NAME_COLUMN", message: "No company name column found; rows will be matched by business ID only." },
+  NO_DATA_ROWS: { code: "NO_DATA_ROWS", message: "The file contains no data rows." },
+  INVALID_BUSINESS_IDS: { code: "INVALID_BUSINESS_IDS", message: "Some business IDs are malformed or fail the checksum." },
+  DUPLICATE_BUSINESS_IDS: { code: "DUPLICATE_BUSINESS_IDS", message: "Some business IDs appear more than once." },
+  ROWS_WITHOUT_KEYS: { code: "ROWS_WITHOUT_KEYS", message: "Some rows have neither a business ID nor a name and cannot be enriched." },
+  RAGGED_ROWS: { code: "RAGGED_ROWS", message: "Some rows have a different number of columns than the header." },
+  DUPLICATE_CHECK_PARTIAL: { code: "DUPLICATE_CHECK_PARTIAL", message: "Duplicate detection stopped after one million unique IDs." },
+  TRUNCATED: { code: "TRUNCATED", message: "Scan stopped at the requested maxRows; counts cover the scanned part only." },
 });
 
 export const MESSAGES = Object.freeze({
   HEALTH_OK: "Service is healthy.",
   UPLOAD_RECEIVED: "CSV received and stored.",
+  UPLOAD_INSPECTED: "CSV inspected.",
 });
